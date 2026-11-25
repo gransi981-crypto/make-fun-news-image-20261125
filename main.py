@@ -1,25 +1,26 @@
-"""Entrypoint: copy the finished front page to /output/entry.png.
+"""Move the finished front page into the grader's output folder.
 
-The front page (entry.png, drawn by render.py) is held in this
-repository; the program only copies it to the output directory.
-No rendering, no fonts and no third-party packages run in the
-grader, so the program cannot fail on a missing system font:
-it is a plain stdlib file copy, and two runs write identical bytes.
+The repository already holds the finished 1024 by 1024 image, so
+this entrypoint only copies those bytes to /output/entry.png with
+the standard library. Nothing about the grader's fonts or
+installed packages can make the run fail. Two runs write
+identical bytes, because a copy of the same file is the same file.
 """
 
 import os
 import shutil
 
 
-def main():
-    here = os.path.dirname(os.path.abspath(__file__))
-    src = os.path.join(here, "entry.png")
+def run():
+    root = os.path.dirname(os.path.abspath(__file__))
+    image = os.path.join(root, "entry.png")
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-    out = os.path.join(out_dir, "entry.png")
-    os.makedirs(out_dir, exist_ok=True)
-    shutil.copyfile(src, out)
-    print(f"wrote {out}")
+    target = os.path.join(out_dir, "entry.png")
+    if not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
+    shutil.copyfile(image, target)
+    print("wrote " + target)
 
 
 if __name__ == "__main__":
-    main()
+    run()
